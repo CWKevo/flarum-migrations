@@ -3,6 +3,9 @@ import sqlmodel as sql
 
 from datetime import datetime, date
 
+if t.TYPE_CHECKING:
+    from flarum_migrations.migrations.flarum.access_tokens import FlarumAccessToken
+
 
 
 class FlarumUser(sql.SQLModel, table=True):
@@ -28,7 +31,7 @@ class FlarumUser(sql.SQLModel, table=True):
     """User's password (`bcrypt` hashed)."""
 
     bio: t.Optional[t.Text]
-    """User's biography."""
+    """User's bio."""
     avatar_url: t.Optional[str] = sql.Field(max_length=100)
     """User's avatar URL."""
 
@@ -114,3 +117,7 @@ class FlarumUser(sql.SQLModel, table=True):
     """Whether the user's `'posted on <device>'` header should be shown above posts."""
     shadow_banned_until: t.Optional[datetime]
     """Date and time when the user's shadow ban expires."""
+
+
+    access_tokens: t.List['FlarumAccessToken'] = sql.Relationship(back_populates='user')
+    """List of access tokens for the user."""
