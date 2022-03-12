@@ -1,7 +1,7 @@
 from tests import ENGINE
 from sqlmodel import select, Session
 
-from flarum_migrations.migrations.flarum.users import FlarumUser
+from flarum_migrations.models.flarum.users import FlarumUser
 
 
 def test_user_select():

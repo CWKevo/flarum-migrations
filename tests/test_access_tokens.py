@@ -1,7 +1,7 @@
 from tests import ENGINE
 from sqlmodel import select, Session
 
-from flarum_migrations.migrations.flarum.access_tokens import FlarumAccessToken
+from flarum_migrations.models.flarum.access_tokens import FlarumAccessToken
 
 
 def test_access_token_select():

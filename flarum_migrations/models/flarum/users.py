@@ -4,7 +4,7 @@ import sqlmodel as sql
 from datetime import datetime, date
 
 if t.TYPE_CHECKING:
-    from flarum_migrations.migrations.flarum.access_tokens import FlarumAccessToken
+    from .access_tokens import FlarumAccessToken
 
 
 
