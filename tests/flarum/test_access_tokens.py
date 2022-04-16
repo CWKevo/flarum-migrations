@@ -11,7 +11,7 @@ def test_access_token_select():
 
     with Session(ENGINE) as session:
         access_token = session.exec(select(FlarumAccessToken)).first()
-        print(access_token.title if access_token else 'No access token found.')
+        print(access_token.id if access_token else 'No access token found.')
 
 
 
