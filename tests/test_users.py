@@ -1,8 +1,7 @@
 from tests import ENGINE
 from sqlmodel import select, Session
 
-import bcrypt
-
+from flarum_migrations.utilities import flarum_hash_password
 from flarum_migrations.models.flarum.users import FlarumUser
 from flarum_migrations.models.flarum.discussions import FlarumDiscussion
 
@@ -30,7 +29,7 @@ def test_user_create_and_delete(delete: bool=True):
             FlarumDiscussion(title='Test Discussion 2', slug='test-discussion-2'),
         ]
 
-        user = FlarumUser(username='testingier', email='testingier@test.gov', password=bcrypt.hashpw(b'test', bcrypt.gensalt()).decode('utf-8'), discussions=discussions)
+        user = FlarumUser(username='testingier', email='testingier@test.gov', password=flarum_hash_password('test'), discussions=discussions)
 
         session.add(user)
         session.commit()
