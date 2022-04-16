@@ -5,7 +5,10 @@ from datetime import datetime, date
 
 if t.TYPE_CHECKING:
     from .access_tokens import FlarumAccessToken
+    from .achievements import FlarumAchievement
+    from .discussions import FlarumDiscussion
 
+from .achievement_user import FlarumAchievementUser
 
 
 class FlarumUser(sql.SQLModel, table=True):
@@ -35,7 +38,7 @@ class FlarumUser(sql.SQLModel, table=True):
     avatar_url: t.Optional[str] = sql.Field(max_length=100)
     """User's avatar URL."""
 
-    preferences: t.Dict[str, str] = {}
+    preferences: str = '{}'
     """User's preferences data (for notifications, and other settings such as draft autosave interval)."""
 
     joined_at: t.Optional[datetime] = sql.Field(index=True)
@@ -85,27 +88,29 @@ class FlarumUser(sql.SQLModel, table=True):
     """URL to user's cover image."""
     minotar: t.Optional[str] = sql.Field(max_length=36)
     """URL to user's minotar avatar."""
-    username_history: t.Dict[str, str] = {}
+    username_history: str = '{}'
     """Username history."""
     social_buttons: t.Optional[t.Text]
     """JSON-encoded list of social buttons."""
-    signature: t.Optional[t.Text]
+    signature: t.Text = ''
     """User's signature."""
-    location: t.Optional[t.Text]
+    location: t.Text = ''
     """User's location."""
 
-    twofa_secret: t.Optional[str] = sql.Field(max_length=120)
+    twofa_secret: str = sql.Field(max_length=120, default='')
     """User's two-factor authentication secret."""
     twofa_active: bool = False
     """Whether the user has enabled two-factor authentication."""
-    twofa_codes: t.Optional[str] = sql.Field(max_length=200)
+    twofa_codes: str = sql.Field(max_length=200, default='')
     """JSON-encoded list of two-factor authentication codes."""
 
     unread_messages: int = 0
     """Number of unread messages."""
 
     invite_code: t.Optional[str] = sql.Field(max_length=128)
+    """The invite code of the user."""
     votes: int = 0
+    """Number of votes the user has cast."""
     last_vote_time: t.Optional[datetime]
     """Date and time when the user last voted."""
     rank: t.Optional[str] = sql.Field(max_length=255)
@@ -121,3 +126,16 @@ class FlarumUser(sql.SQLModel, table=True):
 
     access_tokens: t.List['FlarumAccessToken'] = sql.Relationship(back_populates='user')
     """List of access tokens for the user."""
+    achievements: t.List['FlarumAchievement'] = sql.Relationship(back_populates="users", link_model=FlarumAchievementUser)
+    """List of achievements the user has."""
+
+    # Figure out how to use 'back_populates' to link to the user
+    # FIXME: AmbiguousForeignKeysError (possibly: https://stackoverflow.com/questions/22355890/ and https://docs.sqlalchemy.org/en/14/orm/join_conditions.html#handling-multiple-join-paths)
+    discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.user_id", "lazy": "joined", "overlaps": "user"})
+    """List of discussions the user has created."""
+    last_posted_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.last_posted_user_id", "lazy": "joined", "overlaps": "last_posted_user"})
+    """List of discussions in which the user created last post."""
+    hid_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.hidden_user_id", "lazy": "joined", "overlaps": "hidden_user"})
+    """List of discussions that the user hid."""
+    best_answer_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.best_answer_user_id", "lazy": "joined", "overlaps": "best_answer_user"})
+    """List of discussions in which the user has posted the best answer."""
