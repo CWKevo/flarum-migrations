@@ -18,3 +18,5 @@ class FlarumAchievementUser(sql.SQLModel, table=True):
     """The ID of the user who has the achievement."""
     achievement_id: t.Optional[int] = sql.Field(default=None, foreign_key="achievements.id", primary_key=True)
     """The ID of the achievement that belongs to the user."""
+
+    
