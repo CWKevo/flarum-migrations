@@ -13,8 +13,13 @@ def test_user_select():
 
     with Session(ENGINE) as session:
         user = session.exec(select(FlarumUser)).first()
-        print(user.username if user else 'No user found.')
-        print(f"Achievements: {[achievement.name for achievement in user.achievements]}")
+
+        if user:
+            print(user.username)
+            print(f"Achievements: {[achievement.name for achievement in user.achievements]}")
+
+        else:
+            print('No user found.')
 
 
 
