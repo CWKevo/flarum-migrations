@@ -36,6 +36,8 @@ def test_user_create_and_delete(delete: bool=True):
         session.commit()
         session.refresh(user)
 
+        print(user.id, user.username)
+
         for discussion in user.discussions:
             print(discussion.id, discussion.title)
         
