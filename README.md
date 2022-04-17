@@ -3,6 +3,8 @@
 A project that wraps [Flarum's database schema](https://discuss.flarum.org/d/30351) and
 provides migration scripts for popular forum & discussion software.
 
+Also see [https://github.com/CWKevo/forum-database-schemas](https://github.com/CWKevo/forum-database-schemas)
+
 ## 🎁 Support me
 
 I create free software to benefit people.
