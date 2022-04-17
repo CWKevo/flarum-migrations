@@ -7,6 +7,7 @@ if t.TYPE_CHECKING:
     from .access_tokens import FlarumAccessToken
     from .achievements import FlarumAchievement
     from .discussions import FlarumDiscussion
+    from .posts import FlarumPost
 
 from .achievement_user import FlarumAchievementUser
 
@@ -128,14 +129,13 @@ class FlarumUser(sql.SQLModel, table=True):
     """List of access tokens for the user."""
     achievements: t.List['FlarumAchievement'] = sql.Relationship(back_populates="users", link_model=FlarumAchievementUser)
     """List of achievements the user has."""
-
-    # Figure out how to use 'back_populates' to link to the user
-    # FIXME: AmbiguousForeignKeysError (possibly: https://stackoverflow.com/questions/22355890/ and https://docs.sqlalchemy.org/en/14/orm/join_conditions.html#handling-multiple-join-paths)
-    discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.user_id", "lazy": "joined", "overlaps": "user"})
+    discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.user_id", "lazy": "joined"})
     """List of discussions the user has created."""
-    last_posted_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.last_posted_user_id", "lazy": "joined", "overlaps": "last_posted_user"})
+    last_posted_in_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.last_posted_user_id", "lazy": "joined"})
     """List of discussions in which the user created last post."""
-    hid_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.hidden_user_id", "lazy": "joined", "overlaps": "hidden_user"})
+    hid_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.hidden_user_id", "lazy": "joined"})
     """List of discussions that the user hid."""
-    best_answer_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.best_answer_user_id", "lazy": "joined", "overlaps": "best_answer_user"})
+    best_answer_discussions: t.List['FlarumDiscussion'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumUser.id==FlarumDiscussion.best_answer_user_id", "lazy": "joined"})
     """List of discussions in which the user has posted the best answer."""
+    posts: t.List['FlarumPost'] = sql.Relationship(sa_relationship_kwargs={"primaryjoin": "FlarumPost.user_id==FlarumUser.id", "lazy": "joined"})
+    """List of all posts the user made."""

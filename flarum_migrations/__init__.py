@@ -2,7 +2,7 @@ import typing as t
 
 from pathlib import Path
 
-from sqlmodel import create_engine, SQLModel
+from sqlmodel import create_engine, SQLModel, Session
 from sqlalchemy.future.engine import Engine
 from sqlalchemy import inspect
 

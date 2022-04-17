@@ -2,8 +2,9 @@ from tests import ENGINE
 from sqlmodel import select, Session
 
 from flarum_migrations.utilities import flarum_hash_password
-from flarum_migrations.models.flarum.users import FlarumUser
 from flarum_migrations.models.flarum.discussions import FlarumDiscussion
+from flarum_migrations.models.flarum.posts import FlarumPost
+from flarum_migrations.models.flarum.users import FlarumUser
 
 
 def test_user_select():
@@ -43,13 +44,24 @@ def test_user_create_and_delete(delete: bool=True):
         print(user.id, user.username)
 
         for discussion in user.discussions:
+            user.posts = [
+                FlarumPost(discussion=discussion, content=f'Test post 1 in "{discussion.title}"'),
+                FlarumPost(discussion=discussion, content=f'Test post 2 in "{discussion.title}"'),
+            ]
+            session.commit()
+            session.refresh(user)
+            session.refresh(discussion)
+
             print(discussion.id, discussion.title)
-        
+            print(f'First post: "{discussion.posts[0].content}" [...]')
+
+
         if delete:
             session.delete(user)
+
             for discussion in discussions:
                 session.delete(discussion)
-            
+
             session.commit()
 
         print("OK")
